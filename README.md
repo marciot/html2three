@@ -3,7 +3,7 @@
 html2vr
 =============
 
-_html2vr is an experimental library for creating VR content using HTML and CSS. The library has the following features:
+_html2vr_ is an experimental library for creating VR content using HTML and CSS. The library has the following features:
 
 * Embed images using _img_ tags
 * Use stylesheets for sophisticated text formatting
@@ -26,10 +26,15 @@ I am a strong believer in open source. As such, this code has been released unde
 
 This project makes use of [THREE.js], the [WebVR polyfill] and Leap Motion's [Orion Beta SDK]
 
-[logo]:https://github.com/marciot/html2vr/artwork/banner.png "A screenshot of the html2vr demo using a Leap Motion controller"
-[Chrome]:https://webvr.info/get-chrome/
-[Firefox]:https://mozvr.com/
+[logo]: https://github.com/marciot/html2vr/raw/master/artwork/banner.png "A screenshot of the html2vr demo using a Leap Motion controller"
+[Chrome]: https://webvr.info/get-chrome/
+[Firefox]: https://mozvr.com/
 [render HTML content to a Canvas]:https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Drawing_DOM_objects_into_a_canvas
-[WebVR polyfill]:https://github.com/googlevr/webvr-polyfill
-[MutationObserver]:https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver
+[THREE.js]: https://threejs.org
+[WebVR polyfill]: https://github.com/googlevr/webvr-polyfill
+[WebGL]: https://www.khronos.org/webgl
+[WebVR]: https://webvr.info
+[WebAudio]: https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API
+[Gamepad API]: https://developer.mozilla.org/en-US/docs/Web/API/Gamepad_API/Using_the_Gamepad_API
+[MutationObserver]: https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver
 [Orion Beta SDK]:https://developer.leapmotion.com/get-started
