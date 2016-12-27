@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>html2vr</title>
+        
+        <!-- The main stylesheet is used to layout the page for non-VR users -->
+        
+        <style>            
+            .vrPanel {
+                margin:        10px 0;
+            }
+            
+            /* Do not use "display: none", all objects must take up
+               space on the page for them to be clickable in VR */
+
+            .vrOnly {
+                visibility: hidden; 
+            }
+        </style>
+        
+        <!-- A separate stylesheet is used for objects that are rendered in VR -->
+        
+        <style id="vrStyles">
+            .vrPanel {
+                background:    rgba(255,255,255,0.5);
+                padding:       1em;
+                border-radius: 1em;
+                
+                font-size:     200%;
+            }
+            
+            .vrPanel h1 {
+                color:       red;
+            }
+            
+            .vrPanel h1, h2, h3, .stereoscope {
+                font-family:   "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
+            }
+            
+            .vrPanel ul {
+                margin:               0 0;
+                margin-left:          250px;
+                list-style-position:  inside;
+            }
+            
+            .vrPanel .floatLeft {
+                float:                left;
+                width:                256px;
+            }
+            
+            .vrPanel .imageButtons {
+                width:                15%;
+                height:               15%;
+                padding:              1em;
+            }
+            
+            .header {
+                display:              flex;
+                align-items:          center;
+                justify-content:      center;
+            }
+            
+            .header span {
+                font-size:            200%;
+                color:                red;
+                font-weight:          bold;
+            }
+            
+            .header img {
+                width:                256px;
+                margin:               0 1em;
+            }
+            
+            .button, .toggleButton {
+                display:     inline-block;
+                padding:     1em;
+                font-weight: bold;
+                
+                color:       red;
+                border:      3px solid red;
+                
+                margin:      0.5em 0;
+            }
+            
+            .toggleButton {
+                color:     red;
+                border:    3px solid red;
+                
+                cursor:    pointer;
+            }
+            
+            .toggleButton.active {
+                color:        green;
+                border-color: green;
+                background:   rgba(0,255,0,0.25);
+            }
+            
+            .centered {
+                text-align:    center;
+            }
+            
+            span.fancy {
+                color:       white;
+                text-shadow: 0 0 2px blue;
+            }
+        </style>
+
+        <!-- Required: The THREE.js library and VREffect are used for rendering -->
+        <script src="lib/third-party/three/three.min.js"></script>
+        <script src="lib/third-party/three/VREffect.js"></script>
+        
+        <!-- Optional: The WebVR Polyfill allows the demo to run on browsers that do not support WebVR -->
+        <script src="lib/third-party/webvr-polyfill/webvr-polyfill.js"></script>
+        
+        <!-- Optional: The Leap Motion libraries allow for control of the interface using your hands -->
+        <script src="https://js.leapmotion.com/leap-0.6.4.min.js"></script>
+        <script src="https://js.leapmotion.com/leap-plugins-0.1.12.min.js"></script>
+        
+        <!-- Required: All of the following html2vr code is necessary -->
+        <script src="lib/html2vr/Skydome.js"></script>
+        <script src="lib/html2vr/HTMLElements.js"></script>
+        <script src="lib/html2vr/Controllers.js"></script>
+        <script src="lib/html2vr/Soundscape.js"></script>
+        <script src="lib/html2vr/AirCanvas.js"></script>
+        <script src="lib/html2vr/DebugOverlay.js"></script>
+        <script src="lib/html2vr/Main.js"></script>
+        
+    </head>
+    <body>
+        <!-- The body of the page consists of one of more DIVs that can be individually positioned in VR -->
+        
+        <div id="vrPanel1" class="vrPanel centered">
+            <p class="header">
+                <img  src="textures/stereoscope-clipart-illustration-512px.png">
+                <span class="title">html2vr</span>
+            </p>
+            <h2>Make virtual reality web pages using HTML and CSS.</h2>
+            
+            <div class="button" id="enterVR">Enter VR</div>
+        </div>
+        
+        <div id="vrPanel2" class="vrPanel">
+            <img class="floatLeft" src="textures/johnny-automatic-pointing-hand-512px.png">
+            <ul>
+                <li>Embed <strong>images</strong> using &lt;img&gt; tags
+                <li>Use <strong>stylesheets</strong> for sophisticated <span class="fancy">text formatting</span>
+                <li>See <strong>your hands</strong> using a Leap Motion controller
+                <li>Easy-to-use, no WebGL or THREE.js knowledge required</li>
+                <li><strong>Open-source</strong>, released under the Affero GPL license</li>
+            </ul>
+        </div>
+        
+        <div id="vrPanel3" class="vrPanel centered">
+            <h1>Interactive Elements</h1>
+            
+            <div class="toggleButton">Push me</div>
+            <div class="toggleButton">Me too</div>
+            <div class="toggleButton">Me three</div>
+            
+            <p>
+                <img id="moonBtn" class="imageButtons" src="textures/johnny-automatic-angry-moon-256px.png">
+                <img id="sunBtn"  class="imageButtons" src="textures/johnny-automatic-sun-woodcut-256px.png">
+            </p>
+        </div>
+        
+        <div id="vrSun" class="vrOnly">
+            <img id="sun" src="textures/johnny-automatic-sun-woodcut-256px.png">
+        </div>
+        
+        <div id="vrMoon" class="vrOnly">
+            <img id="sun" src="textures/johnny-automatic-angry-moon-256px.png">
+        </div>
+        
+        <script>
+            /* Add interactive elements */
+            
+            var btns = document.getElementsByClassName("toggleButton");
+            for(var i = 0; i < btns.length; i++) {
+                btns[i].addEventListener("click",
+                    function(e) {
+                        if(e.target.classList.contains("active")) {
+                            e.target.classList.remove("active");
+                        } else {
+                            e.target.classList.add("active");
+                        }
+                    }
+                );
+            }
+            
+            function enterVRMode() {
+                HTML2VR.toggleVR();
+                document.getElementById("enterVR").innerText = HTML2VR.inVR ? "Exit VR" : "Enter VR";
+            }
+            
+            function daylightMode() {
+                HTML2VR.setBackground("textures/sky-day.jpg", true);
+            }
+            
+            function nighttimeMode() {
+                HTML2VR.setBackground("textures/sky-night.jpg", false);
+            }
+            
+            document.getElementById("sunBtn").addEventListener("click", daylightMode);
+            document.getElementById("moonBtn").addEventListener("click", nighttimeMode);
+            document.getElementById("enterVR").addEventListener("click", enterVRMode);
+
+            /* Define the VR layout using the HTML2VR library */
+            
+            HTML2VR.init();
+            HTML2VR.setBackground("textures/sky-day.jpg");
+            HTML2VR.setStylesheet("#vrStyles");
+            HTML2VR.add("#vrPanel1", {azimuth: 0});
+            HTML2VR.add("#vrPanel2", {azimuth: 60});
+            HTML2VR.add("#vrPanel3", {azimuth: -60});
+            HTML2VR.add("#vrSun",   {azimuth: 30,  elevation: 70});
+            HTML2VR.add("#vrMoon",  {azimuth: 210, elevation: -70});
+        </script>
+    </body>
+</head>
