@@ -24,13 +24,18 @@ This library uses [WebGL], [WebVR], [WebAudio] and the [Gamepad API]. It uses a 
 
 ## Licensing:
 
-I am a strong believer in open source. As such, this code has been released under the Affero GPL license. If you would like to use this code under a non-copyleft license, please contact me.
+I am a strong believer in open source. As such, this code has been released under the Affero GPL license.
+
+## How can you help this project?
+
+Please visit my [Patreon page] to learn how you can support this open-source project!
 
 ## Credits:
 
 This project makes use of [THREE.js], the [WebVR polyfill] and Leap Motion's [Orion Beta SDK]
 
 [logo]: https://github.com/marciot/html2three/raw/master/artwork/banner.png "A screenshot of the html2three demo using a Leap Motion controller"
+[Patreon page]: https://www.patreon.com/marciot
 [Chrome]: https://webvr.info/get-chrome/
 [Firefox]: https://mozvr.com/
 [render HTML content to a Canvas]:https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Drawing_DOM_objects_into_a_canvas
