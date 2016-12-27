@@ -3,12 +3,16 @@
 html2vr
 =============
 
-_html2vr_ is an experimental library for creating VR content using HTML and CSS. The library has the following features:
+_html2vr_ is an experimental library for creating VR content using HTML, CSS and JavaScript. The library has the following features:
 
-* Embed images using _img_ tags
-* Use stylesheets for sophisticated text formatting
-* See your hands using a Leap Motion controller
-* Easy-to-use, no WebGL or THREE.js knowledge required
+* Float _div_ elements in VR space.
+* Embed images using _img_ tags.
+* Use stylesheets for sophisticated text formatting.
+* Design interactive elements using HTML, CSS and JavaScript.
+* See your hands using a Leap Motion controller.
+* No WebGL or THREE.js knowledge required.
+
+This library provides an effect very similar to [CSS 3D transforms] or the THREE.js [CSS3DRenderer], but neither of these technologies work in VR or in stereo. _html2vr_ attempts to bridge that gap.
 
 ## Online demo:
 
@@ -20,7 +24,7 @@ This library uses [WebGL], [WebVR], [WebAudio] and the [Gamepad API]. It uses a 
 
 ## Licensing:
 
-I am a strong believer in open source. As such, this code has been released under the Affero GPL license.
+I am a strong believer in open source. As such, this code has been released under the Affero GPL license. If you would like to use this code under a non-copyleft license, please contact me.
 
 ## Credits:
 
@@ -31,6 +35,8 @@ This project makes use of [THREE.js], the [WebVR polyfill] and Leap Motion's [Or
 [Firefox]: https://mozvr.com/
 [render HTML content to a Canvas]:https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Drawing_DOM_objects_into_a_canvas
 [THREE.js]: https://threejs.org
+[CSS 3D transforms]: http://www.w3schools.com/css/css3_3dtransforms.asp
+[CSS3DRenderer]: https://threejs.org/examples/css3d_periodictable.html
 [WebVR polyfill]: https://github.com/googlevr/webvr-polyfill
 [WebGL]: https://www.khronos.org/webgl
 [WebVR]: https://webvr.info
