@@ -5,9 +5,9 @@
         
         <!-- The main stylesheet is used to layout the page for non-VR users -->
         
-        <style>            
+        <style>
             .vrPanel {
-                margin:        10px 0;
+                margin: 1em auto;
             }
             
             /* Do not use "display: none", all objects must take up
@@ -103,6 +103,20 @@
                 color:       white;
                 text-shadow: 0 0 2px blue;
             }
+
+            .credits P {
+                font-size: medium;
+            }
+
+            .credits CITE {
+                font-weight: bold;
+                display: block;
+            }
+
+            .compass {
+                width:  512px;
+                height: 512px;
+            }
         </style>
 
         <!-- Required: The THREE.js library and VREffect are used for rendering -->
@@ -136,11 +150,15 @@
                 <span class="title">html2three</span>
             </p>
             <h2>Make virtual reality web pages using HTML and CSS.</h2>
+
+            <p>
+            Double-tap headset to reset front-facing orientation
+            </p>
             
             <div class="button" id="enterVR">Enter VR</div>
         </div>
         
-        <div id="vrPanel2" class="vrPanel">
+        <div id="vrPanelFeatures" class="vrPanel">
             <img class="floatLeft" src="textures/johnny-automatic-pointing-hand-512px.png">
             <ul>
                 <li>Embed <strong>images</strong> using &lt;img&gt; tags
@@ -151,7 +169,7 @@
             </ul>
         </div>
         
-        <div id="vrPanel3" class="vrPanel centered">
+        <div id="vrPanelInteractive" class="vrPanel centered">
             <h1>Interactive Elements</h1>
             
             <div class="toggleButton">Push me</div>
@@ -164,14 +182,45 @@
             </p>
         </div>
         
-        <div id="vrSun" class="vrOnly">
+        <div id="vrPanelTurnAssist" class="vrPanel centered">
+            <img class="owl" src="textures/fromoldbooks.org-barn-own-512px.png">
+            <h1>Turn Assist</h1>
+            <h2>Turn your neck like an owl!</h2>
+            <p>
+                Look directly behind you while sitting!
+            </p>
+            <div id="turnAssistBtn" class="toggleButton">Enable</div>
+        </div>
+
+        <div id="vrPanelCredits" class="vrPanel centered credits">
+            <h1>Image Credits</h1>
+            <p>
+            <cite>"Stereoscope Clipart Illustration", public domain (Karen Arnold)</cite> http://www.publicdomainpictures.net/pictures/170000/velka/stereoscope-clipart-illustration.jpg#.WGVOvB9YeKQ.link</p>
+            <p><cite>"Wind rose / compass" by urwald</cite>https://openclipart.org/detail/3256/wind-rose-compass-rose</p>
+            <p><cite>"Barn Owl", by Arthur Watts, "A Painter's Anthology" (1924)</cite> http://www.fromoldbooks.org/ArthurWatts-PaintersAnthology/pages/025-owl/</p>
+            <p><cite>"Pointing hand", by johnny_automatic</cite>https://openclipart.org/detail/1006/pointing-hand</p>
+            <p><cite>"Angry moon", by johnny_automatic</cite>https://openclipart.org/detail/3261/angry-moon</p>
+            <p><cite>"Sun woodcut", by johnny_automatic</cite>https://openclipart.org/detail/551/sun-woodcut</p>
+            <p><cite>"Dragon behind the Door"</cite>https://www.oldbookillustrations.com/illustrations/dragon-door/</p>
+            <p><cite>"The Milky Way panorama", CC-BY 4.0 ESO/S. Brunier</cite>https://www.eso.org/public/usa/images/eso0932a/</p>
+            <p><cite>"sky_sunbeams1", by 0ptikz</cite> https://blenderartists.org/forum/showthread.php?24038-Free-high-res-skymaps-(Massive-07-update!)
+            </p>
+        </div>
+
+        <div id="vrPanelSouth" class="vrPanel centered vrOnly">
+            <h1>Look out behind you!</h1>
+            <img src="textures/dragon-door-1200px.jpg">
+        </div>
+
+        <div id="vrCompass" class="vrOnly compass">
+            <img src="textures/urwald-wind-rose-compass-rose-512px.png">
+        </div>
+
+        <div id="vrCelestialBody" class="vrOnly">
             <img id="sun" src="textures/johnny-automatic-sun-woodcut-256px.png">
+            <img id="moon" src="textures/johnny-automatic-angry-moon-256px.png">
         </div>
-        
-        <div id="vrMoon" class="vrOnly">
-            <img id="sun" src="textures/johnny-automatic-angry-moon-256px.png">
-        </div>
-        
+
         <script>
             /* Add interactive elements */
             
@@ -195,30 +244,46 @@
             
             function daylightMode() {
                 HTML2VR.setBackground("textures/sky-day.jpg", true);
+                document.getElementById("moon").style.display = "none";
+                document.getElementById("sun").style.display = "block";
             }
             
             function nighttimeMode() {
                 HTML2VR.setBackground("textures/sky-night.jpg", false);
+                document.getElementById("moon").style.display = "block";
+                document.getElementById("sun").style.display = "none";
+            }
+
+            function toggleTurnAssist() {
+                var mode = document.getElementById("turnAssistBtn").classList.contains("active");
+                HTML2VR.seatedExperience = mode;
             }
             
             document.getElementById("sunBtn").addEventListener("click", daylightMode);
             document.getElementById("moonBtn").addEventListener("click", nighttimeMode);
             document.getElementById("enterVR").addEventListener("click", enterVRMode);
+            document.getElementById("turnAssistBtn").addEventListener("click", toggleTurnAssist);
 
             /* Define the VR layout using the HTML2VR library */
-            
+
             HTML2VR.init();
             HTML2VR.setBackground("textures/sky-day.jpg");
             HTML2VR.setStylesheet("#vrStyles");
+            HTML2VR.add("#vrPanelFeatures", {azimuth: -120});
+            HTML2VR.add("#vrPanelInteractive", {azimuth: -60});
             HTML2VR.add("#vrPanel1", {azimuth: 0});
-            HTML2VR.add("#vrPanel2", {azimuth: 60});
-            HTML2VR.add("#vrPanel3", {azimuth: -60});
-            HTML2VR.add("#vrSun",   {azimuth: 30,  elevation: 70});
-            HTML2VR.add("#vrMoon",  {azimuth: 210, elevation: -70});
+            HTML2VR.add("#vrPanelTurnAssist", {azimuth: 60});
+            HTML2VR.add("#vrPanelCredits", {azimuth: 120});
+            HTML2VR.add("#vrPanelSouth",  {azimuth: 180});
+
+            HTML2VR.add("#vrCelestialBody",   {azimuth: 30,  elevation: 70});
+            HTML2VR.add("#vrCompass",  {azimuth: 0, elevation: -90});
+
+            daylightMode();
         </script>
         
-		<!-- Fork me on github ribbon -->
-		<a href="https://github.com/marciot"><img style="position: absolute; top: 0; right: 0; border: 0; z-index: 101;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
-		<!-- End of fork me on github ribbon -->
+        <!-- Fork me on github ribbon -->
+        <a href="https://github.com/marciot"><img style="position: absolute; top: 0; right: 0; border: 0; z-index: 101;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
+        <!-- End of fork me on github ribbon -->
     </body>
 </head>
