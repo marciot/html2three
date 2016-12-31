@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>html2three</title>
+        
+        <!-- The main stylesheet is used to layout the page for non-VR users -->
+        
+        <style>            
+            .vrPanel {
+                margin:        10px 0;
+            }
+            
+            /* Do not use "display: none", all objects must take up
+               space on the page for them to be clickable in VR */
+
+            .vrOnly {
+                visibility: hidden; 
+            }
+        </style>
+        
+        <!-- A separate stylesheet is used for objects that are rendered in VR -->
+        
+        <style id="vrStyles">
+            .vrPanel {
+                background:    rgba(255,255,255,0.5);
+                padding:       1em;
+                border-radius: 1em;
+                
+                font-size:     200%;
+            }
+            
+            .vrPanel h1 {
+                color:       red;
+            }
+            
+            .vrPanel h1, h2, h3, .stereoscope {
+                font-family:   "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
+            }
+            
+            .vrPanel ul {
+                margin:               0 0;
+                margin-left:          250px;
+                list-style-position:  inside;
+            }
+            
+            .vrPanel .floatLeft {
+                float:                left;
+                width:                256px;
+            }
+            
+            .vrPanel .imageButtons {
+                width:                15%;
+                height:               15%;
+                padding:              1em;
+            }
+            
+            .header {
+                display:              flex;
+                align-items:          center;
+                justify-content:      center;
+            }
+            
+            .header span {
+                font-size:            200%;
+                color:                red;
+                font-weight:          bold;
+            }
+            
+            .header img {
+                width:                256px;
+                margin:               0 1em;
+            }
+            
+            .button, .toggleButton {
+                display:     inline-block;
+                padding:     1em;
+                font-weight: bold;
+                
+                color:       red;
+                border:      3px solid red;
+                
+                margin:      0.5em 0;
+            }
+            
+            .toggleButton {
+                color:     red;
+                border:    3px solid red;
+                
+                cursor:    pointer;
+            }
+            
+            .toggleButton.active {
+                color:        green;
+                border-color: green;
+                background:   rgba(0,255,0,0.25);
+            }
+            
+            .centered {
+                text-align:    center;
+            }
+            
+            span.fancy {
+                color:       white;
+                text-shadow: 0 0 2px blue;
+            }
+        </style>
+
+        <!-- Required: The THREE.js library and VREffect are used for rendering -->
+        <script src="lib/third-party/three/three.min.js"></script>
+        <script src="lib/third-party/three/VREffect.js"></script>
+        
+        <!-- Optional: The WebVR Polyfill allows the demo to run on browsers that do not support WebVR -->
+        <script src="lib/third-party/webvr-polyfill/webvr-polyfill.js"></script>
+        
+        <!-- Optional: The Leap Motion libraries allow for control of the interface using your hands -->
+        <script src="https://js.leapmotion.com/leap-0.6.4.min.js"></script>
+        <script src="https://js.leapmotion.com/leap-plugins-0.1.12.min.js"></script>
+        
+        <!-- Required: All of the following html2three code is necessary -->
+        <script src="lib/html2three/Skydome.js"></script>
+        <script src="lib/html2three/HTMLElements.js"></script>
+        <script src="lib/html2three/Controllers.js"></script>
+        <script src="lib/html2three/Soundscape.js"></script>
+        <script src="lib/html2three/AirCanvas.js"></script>
+        <script src="lib/html2three/DebugOverlay.js"></script>
+        <script src="lib/html2three/Main.js"></script>
+        
+    </head>
+    <body>
+        <!-- The body of the page consists of one of more DIVs that can be individually positioned in VR -->
+        
+        <div id="vrPanel1" class="vrPanel centered">
+            <h2>This is a hyperlinked page</h2>
+            
+            <div class="button" id="goBack">Return</div>
+        </div>
+        
+        <script>
+            function goBack() {
+                window.location.href = "index.html";
+            }
+            
+            document.getElementById("goBack").addEventListener("click", goBack);
+
+            /* Define the VR layout using the HTML2VR library */
+            
+            HTML2VR.init();
+            HTML2VR.setBackground("textures/sky-day.jpg");
+            HTML2VR.setStylesheet("#vrStyles");
+            HTML2VR.add("#vrPanel1", {azimuth: 0});
+        </script>
+    </body>
+</head>

@@ -180,6 +180,12 @@
                 <img id="moonBtn" class="imageButtons" src="textures/johnny-automatic-angry-moon-256px.png">
                 <img id="sunBtn"  class="imageButtons" src="textures/johnny-automatic-sun-woodcut-256px.png">
             </p>
+
+            <h3>Page Navigation</h3>
+            <p>
+                As of today, page navigation will only in VR under Firefox
+                <div class="button" id="hyperlinkBtn">Hyperlink</div>
+            </p>
         </div>
         
         <div id="vrPanelTurnAssist" class="vrPanel centered">
@@ -259,10 +265,15 @@
                 HTML2VR.seatedExperience = mode;
             }
             
+            function doNavigation() {
+                window.location.href = "hyperlink.html";
+            }
+
             document.getElementById("sunBtn").addEventListener("click", daylightMode);
             document.getElementById("moonBtn").addEventListener("click", nighttimeMode);
             document.getElementById("enterVR").addEventListener("click", enterVRMode);
             document.getElementById("turnAssistBtn").addEventListener("click", toggleTurnAssist);
+            document.getElementById("hyperlinkBtn").addEventListener("click", doNavigation);
 
             /* Define the VR layout using the HTML2VR library */
 
