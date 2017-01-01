@@ -18,7 +18,14 @@
             }
         </style>
         
-        <!-- A separate stylesheet is used for objects that are rendered in VR -->
+        <!-- A separate stylesheet is used for objects that are
+             rendered in VR.
+
+             Troubleshooting texture generation:
+                - All tag names must be in lowercase
+                - #id selectors cannot be rendered in Firefox.
+                - Set "debugTextures" in DebugOverlay.js to debug
+         -->
         
         <style id="vrStyles">
             .vrPanel {
@@ -101,14 +108,14 @@
             
             span.fancy {
                 color:       white;
-                text-shadow: 0 0 2px blue;
+                text-shadow: 0 0 5px blue;
             }
 
-            .credits P {
-                font-size: medium;
+            .credits p {
+                font-size: 50%;
             }
 
-            .credits CITE {
+            .credits cite {
                 font-weight: bold;
                 display: block;
             }
@@ -116,6 +123,11 @@
             .compass {
                 width:  512px;
                 height: 512px;
+            }
+
+            .dragon {
+                max-width:  90%;
+                max-height: 90%;
             }
         </style>
 
@@ -181,19 +193,18 @@
                 <img id="sunBtn"  class="imageButtons" src="textures/johnny-automatic-sun-woodcut-256px.png">
             </p>
 
-            <h3>Page Navigation</h3>
             <p>
-                As of today, page navigation will only in VR under Firefox
-                <div class="button" id="hyperlinkBtn">Hyperlink</div>
+                Hyperlinking in VR currently only works in Firefox
+                <div class="button" id="hyperlinkBtn">Next Page</div>
             </p>
         </div>
         
         <div id="vrPanelTurnAssist" class="vrPanel centered">
             <img class="owl" src="textures/fromoldbooks.org-barn-own-512px.png">
             <h1>Turn Assist</h1>
-            <h2>Turn your neck like an owl!</h2>
+            <h2>Turn your neck like an owl</h2>
             <p>
-                Look directly behind you while sitting!
+                Look straight back while seated!
             </p>
             <div id="turnAssistBtn" class="toggleButton">Enable</div>
         </div>
@@ -215,7 +226,7 @@
 
         <div id="vrPanelSouth" class="vrPanel centered vrOnly">
             <h1>Look out behind you!</h1>
-            <img src="textures/dragon-door-1200px.jpg">
+            <img class="dragon" src="textures/dragon-door-1200px.jpg">
         </div>
 
         <div id="vrCompass" class="vrOnly compass">

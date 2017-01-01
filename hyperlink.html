@@ -37,41 +37,7 @@
                 font-family:   "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
             }
             
-            .vrPanel ul {
-                margin:               0 0;
-                margin-left:          250px;
-                list-style-position:  inside;
-            }
-            
-            .vrPanel .floatLeft {
-                float:                left;
-                width:                256px;
-            }
-            
-            .vrPanel .imageButtons {
-                width:                15%;
-                height:               15%;
-                padding:              1em;
-            }
-            
-            .header {
-                display:              flex;
-                align-items:          center;
-                justify-content:      center;
-            }
-            
-            .header span {
-                font-size:            200%;
-                color:                red;
-                font-weight:          bold;
-            }
-            
-            .header img {
-                width:                256px;
-                margin:               0 1em;
-            }
-            
-            .button, .toggleButton {
+            .button {
                 display:     inline-block;
                 padding:     1em;
                 font-weight: bold;
@@ -82,26 +48,17 @@
                 margin:      0.5em 0;
             }
             
-            .toggleButton {
-                color:     red;
-                border:    3px solid red;
-                
-                cursor:    pointer;
-            }
-            
-            .toggleButton.active {
-                color:        green;
-                border-color: green;
-                background:   rgba(0,255,0,0.25);
-            }
-            
             .centered {
                 text-align:    center;
             }
             
-            span.fancy {
-                color:       white;
-                text-shadow: 0 0 2px blue;
+            .credits p {
+                font-size: medium;
+            }
+
+            .credits cite {
+                font-weight: bold;
+                display: block;
             }
         </style>
 
@@ -117,6 +74,7 @@
         <script src="https://js.leapmotion.com/leap-plugins-0.1.12.min.js"></script>
         
         <!-- Required: All of the following html2three code is necessary -->
+        <script src="lib/html2three/MotionTracker.js"></script>
         <script src="lib/html2three/Skydome.js"></script>
         <script src="lib/html2three/HTMLElements.js"></script>
         <script src="lib/html2three/Controllers.js"></script>
@@ -128,13 +86,22 @@
     </head>
     <body>
         <!-- The body of the page consists of one of more DIVs that can be individually positioned in VR -->
-        
-        <div id="vrPanel1" class="vrPanel centered">
-            <h2>This is a hyperlinked page</h2>
-            
+
+        <div id="vrPanelMain" class="vrPanel centered">
+            <h1>Icebreaker at Work</h1>
+            <p>
+                <img src="textures/icebreaker-864.jpg">
+            </p>
             <div class="button" id="goBack">Return</div>
         </div>
-        
+
+        <div id="vrPanelCredits" class="vrPanel centered credits">
+            <h2>Image Credit</h2>
+            <p>
+                <cite>"Icebreaker at Work"</cite>https://www.oldbookillustrations.com/illustrations/icebreaker
+            </p>
+        </div>
+
         <script>
             function goBack() {
                 window.location.href = "index.html";
@@ -147,7 +114,8 @@
             HTML2VR.init();
             HTML2VR.setBackground("textures/sky-day.jpg");
             HTML2VR.setStylesheet("#vrStyles");
-            HTML2VR.add("#vrPanel1", {azimuth: 0});
+            HTML2VR.add("#vrPanelMain", {azimuth: 0});
+            HTML2VR.add("#vrPanelCredits", {azimuth: 45});
         </script>
     </body>
 </head>
