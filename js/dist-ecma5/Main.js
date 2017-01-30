@@ -2,10 +2,13 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+var mirrorToScreen = false;
+
 var loader = new THREE.TextureLoader();
 var clock = new THREE.Clock();
 var vrDisplay, vrElements, container, vrMode, leapController, scene, motionTracker;
 var interactionManager, fader, debugOverlay, skydomeMaterial, soundscape, airCanvas;
+var mirrorRenderer;
 
 var mouseCursorData = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAWAgMAAAC52oSoAAAACVBMVEVwAIcAAAD///8+z9h7AAAAAXRSTlMAQObYZgAAAEdJREFUCNdjYGB0YAABtgl4qKkQalYIhMp0gFBAWVa3WZlLgJxpq1aCqGWrVgEpxlVgiiELhZKCUyBT2VAooA4HJCo01IEBAFzUIZQhQIXZAAAAAElFTkSuQmCC";
 
@@ -132,6 +135,9 @@ function resize() {
     camera.updateProjectionMatrix();
 
     effect.setSize(width, height);
+    if (mirrorRenderer) {
+        mirrorRenderer.setSize(width, height);
+    }
 
     vrElements.resize();
 }
@@ -148,6 +154,9 @@ function update(dt) {
 function render(dt) {
     //renderer.clear();
     effect.render(scene, camera);
+    if (mirrorRenderer) {
+        mirrorRenderer.render(scene, camera);
+    }
     //renderer.clearDepth();
     //effect.render(hudScene, camera);
 }
@@ -226,6 +235,20 @@ var HTML2VR = function () {
                     if (vrDisplay.capabilities.canPresent) {
                         if (!vrDisplay.isPresenting) {
                             effect.requestPresent();
+                            if (mirrorToScreen) {
+                                console.log("Mirror mode enabled");
+                                mirrorRenderer = new THREE.WebGLRenderer();
+                                var mirrorDOM = mirrorRenderer.domElement;
+                                document.body.appendChild(mirrorDOM);
+                                mirrorDOM.style.position = "fixed";
+                                mirrorDOM.style.top = "0px";
+                                mirrorDOM.style.left = "0px";
+                                mirrorDOM.style.width = "100%";
+                                mirrorDOM.style.height = "100%";
+                                mirrorDOM.style.overflow = "none";
+                                mirrorDOM.style.zIndex = 101;
+                                mirrorDOM.style.pointerEvents = "none";
+                            }
                         }
                         fader.isPresenting();
                     } else {

@@ -3,14 +3,10 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var MotionTracker = function () {
-    function MotionTracker(callback) {
+    function MotionTracker(callback, recenterCallback) {
         _classCallCheck(this, MotionTracker);
 
-        if ('VRFrameData' in window) {
-            if (!this.frameData) {
-                this.frameData = new VRFrameData();
-            }
-        }
+        console.log("Motion tracker initialized");
 
         this.zeroPose = new THREE.Vector3();
         this.zeroOrientation = new THREE.Quaternion();
@@ -31,13 +27,27 @@ var MotionTracker = function () {
         this.tapDetector.addEventListener("doubletap", function () {
             me.resetPose();
             me.resetOrientation();
+            if (recenterCallback) {
+                recenterCallback();
+            }
         });
 
         this.rotationalBoost = new RotationalBoost();
         this.helper = new SphericalOps();
+
+        this.motionModel = MotionTracker.POSITIONAL_TRACKING;
+
+        // The following is used with motionModel.GEARVR_EMULATION
+        this.eyeToNeckDistance = new THREE.Vector3(0, 0.075, -0.0805);
     }
 
     _createClass(MotionTracker, [{
+        key: "dispose",
+        value: function dispose() {
+            this.callback = null;
+            this.tapDetector.dispose();
+        }
+    }, {
         key: "resetPose",
         value: function resetPose() {
             this.zeroPose.copy(this.headsetPose);
@@ -57,13 +67,7 @@ var MotionTracker = function () {
         key: "update",
         value: function update() {
             // Get the headset position and orientation.
-            var pose;
-            if (vrDisplay.getFrameData) {
-                vrDisplay.getFrameData(this.frameData);
-                pose = this.frameData.pose;
-            } else if (vrDisplay.getPose) {
-                pose = vrDisplay.getPose();
-            }
+            var pose = vrDisplay.getPose();
             if (pose.position !== null) {
                 this.headsetPose.fromArray(pose.position);
             }
@@ -80,8 +84,8 @@ var MotionTracker = function () {
             this.callback(this.adjustedPose, this.adjustedOrientation);
         }
     }, {
-        key: "performMotionAdjustments",
-        value: function performMotionAdjustments() {
+        key: "riftTracking",
+        value: function riftTracking() {
             this.adjustedPose.copy(this.headsetPose);
             this.adjustedOrientation.copy(this.headsetOrientation);
 
@@ -93,14 +97,60 @@ var MotionTracker = function () {
             }
 
             // Don't let the user's head wander too far from the origin
-            var maxDistanceFromOrigin = 0.3;
-            if (this.adjustedPose.length() > maxDistanceFromOrigin) {
+            /*const maxDistanceFromOrigin = 0.3;
+            if(this.adjustedPose.length() > maxDistanceFromOrigin) {
                 this.resetPose();
+            }*/
+        }
+    }, {
+        key: "gearEmulation",
+        value: function gearEmulation() {
+            /* Reference:
+              https://forums.oculus.com/vip/discussion/20885/head-neck-model-extreme
+              https://product-guides.oculus.com/en-us/documentation/dk2/latest/concepts/ug-tray-start-advanced/
+             */
+            this.adjustedPose.copy(this.eyeToNeckDistance).applyQuaternion(this.headsetOrientation);
+            this.adjustedOrientation.copy(this.headsetOrientation);
+        }
+    }, {
+        key: "ignorePose",
+        value: function ignorePose() {
+            this.adjustedPose.set(0, 0, 0);
+            this.adjustedOrientation.copy(this.headsetOrientation);
+        }
+    }, {
+        key: "performMotionAdjustments",
+        value: function performMotionAdjustments() {
+            switch (this.motionModel) {
+                case MotionTracker.IGNORE_POSE:
+                    this.ignorePose();
+                    break;
+                case MotionTracker.GEARVR_EMULATION:
+                    this.gearEmulation();
+                    break;
+                case MotionTracker.POSITIONAL_TRACKING:
+                    this.riftTracking();
+                    break;
             }
 
             if (this.motionScaling > 1) {
                 this.rotationalBoost.apply(this.adjustedOrientation, this.adjustedPose, this.motionScaling);
             }
+        }
+    }], [{
+        key: "IGNORE_POSE",
+        get: function () {
+            return 0;
+        }
+    }, {
+        key: "GEARVR_EMULATION",
+        get: function () {
+            return 1;
+        }
+    }, {
+        key: "POSITIONAL_TRACKING",
+        get: function () {
+            return 2;
         }
     }]);
 
@@ -186,6 +236,11 @@ var TapDetector = function () {
     }
 
     _createClass(TapDetector, [{
+        key: "dispose",
+        value: function dispose() {
+            this.eventListeners.length = 0;
+        }
+    }, {
         key: "addEventListener",
         value: function addEventListener(eventStr, callback) {
             this.eventListeners[eventStr].push(callback);
@@ -226,20 +281,19 @@ var TapDetector = function () {
     }, {
         key: "timerAction",
         value: function timerAction(tapDetected) {
-            var doubleTapTime = 0.3;
+            var minDoubleTapTime = 0.15;
+            var doubleTapTime = 0.50;
 
             if (tapDetected) {
                 if (!this.tapClock.running) {
                     // Click event will be dispatched when timer runs down.
                     this.tapClock.start();
-                } else {
-                    if (this.tapClock.elapsedTime < doubleTapTime) {
-                        this.dispatchEvent("doubletap");
-                    }
+                } else if (this.tapClock.getElapsedTime() > minDoubleTapTime) {
                     this.tapClock.stop();
+                    this.dispatchEvent("doubletap");
                 }
             } else {
-                if (this.tapClock.running && this.tapClock.elapsedTime > doubleTapTime) {
+                if (this.tapClock.running && this.tapClock.getElapsedTime() > doubleTapTime) {
                     this.tapClock.stop();
                     this.dispatchEvent("tap");
                 }

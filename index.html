@@ -33,7 +33,7 @@
                 padding:       1em;
                 border-radius: 1em;
                 
-                font-size:     200%;
+                font-size:     24pt;
             }
             
             .vrPanel h1 {
@@ -136,6 +136,11 @@
         <script src="lib/third-party/three/VREffect.js"></script>
         
         <!-- Optional: The WebVR Polyfill allows the demo to run on browsers that do not support WebVR -->
+        <script>
+            WebVRConfig = {
+                ALWAYS_APPEND_POLYFILL_DISPLAY: true
+            };
+        </script>
         <script src="lib/third-party/webvr-polyfill/webvr-polyfill.js"></script>
         
         <!-- Optional: The Leap Motion libraries allow for control of the interface using your hands -->

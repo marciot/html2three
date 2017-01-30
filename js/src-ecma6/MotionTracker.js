@@ -1,10 +1,6 @@
 class MotionTracker {
-    constructor(callback) {
-        if('VRFrameData' in window) {
-            if(!this.frameData) {
-                this.frameData = new VRFrameData();
-            }
-        }
+    constructor(callback, recenterCallback) {
+        console.log("Motion tracker initialized");
 
         this.zeroPose             = new THREE.Vector3();
         this.zeroOrientation      = new THREE.Quaternion();
@@ -25,11 +21,28 @@ class MotionTracker {
         this.tapDetector.addEventListener("doubletap", function() {
             me.resetPose();
             me.resetOrientation();
+            if(recenterCallback) {
+                recenterCallback();
+            }
         });
 
         this.rotationalBoost = new RotationalBoost();
         this.helper = new SphericalOps();
+
+        this.motionModel = MotionTracker.POSITIONAL_TRACKING;
+
+        // The following is used with motionModel.GEARVR_EMULATION
+        this.eyeToNeckDistance = new THREE.Vector3(0, 0.075, -0.0805);
     }
+
+    dispose() {
+        this.callback = null;
+        this.tapDetector.dispose();
+    }
+
+    static get IGNORE_POSE()         {return 0;}
+    static get GEARVR_EMULATION()    {return 1;}
+    static get POSITIONAL_TRACKING() {return 2;}
 
     resetPose() {
         this.zeroPose.copy(this.headsetPose);
@@ -49,13 +62,7 @@ class MotionTracker {
 
     update() {
         // Get the headset position and orientation.
-        var pose;
-        if (vrDisplay.getFrameData) {
-            vrDisplay.getFrameData(this.frameData);
-            pose = this.frameData.pose;
-        } else if (vrDisplay.getPose) {
-            pose = vrDisplay.getPose();
-        }
+        var pose = vrDisplay.getPose();
         if (pose.position !== null) {
             this.headsetPose.fromArray(pose.position);
         }
@@ -72,7 +79,7 @@ class MotionTracker {
         this.callback(this.adjustedPose, this.adjustedOrientation);
     }
 
-    performMotionAdjustments() {
+    riftTracking() {
         this.adjustedPose.copy(this.headsetPose);
         this.adjustedOrientation.copy(this.headsetOrientation);
 
@@ -86,9 +93,37 @@ class MotionTracker {
         }
 
         // Don't let the user's head wander too far from the origin
-        const maxDistanceFromOrigin = 0.3;
+        /*const maxDistanceFromOrigin = 0.3;
         if(this.adjustedPose.length() > maxDistanceFromOrigin) {
             this.resetPose();
+        }*/
+    }
+
+    gearEmulation() {
+        /* Reference:
+          https://forums.oculus.com/vip/discussion/20885/head-neck-model-extreme
+          https://product-guides.oculus.com/en-us/documentation/dk2/latest/concepts/ug-tray-start-advanced/
+         */
+        this.adjustedPose.copy(this.eyeToNeckDistance).applyQuaternion(this.headsetOrientation);
+        this.adjustedOrientation.copy(this.headsetOrientation);
+    }
+
+    ignorePose() {
+        this.adjustedPose.set(0, 0, 0);
+        this.adjustedOrientation.copy(this.headsetOrientation);
+    }
+
+    performMotionAdjustments() {
+        switch(this.motionModel) {
+            case MotionTracker.IGNORE_POSE:
+                this.ignorePose();
+                break;
+            case MotionTracker.GEARVR_EMULATION:
+                this.gearEmulation();
+                break;
+            case MotionTracker.POSITIONAL_TRACKING:
+                this.riftTracking();
+                break;
         }
 
         if(this.motionScaling > 1) {
@@ -162,6 +197,10 @@ class TapDetector {
         this.tapClock = new THREE.Clock(false);
     }
 
+    dispose() {
+        this.eventListeners.length = 0;
+    }
+
     addEventListener(eventStr, callback) {
         this.eventListeners[eventStr].push(callback);
     }
@@ -196,20 +235,19 @@ class TapDetector {
     }
 
     timerAction(tapDetected) {
-        const doubleTapTime = 0.3;
+        const minDoubleTapTime = 0.15;
+        const doubleTapTime    = 0.50;
 
         if(tapDetected) {
             if(!this.tapClock.running) {
                 // Click event will be dispatched when timer runs down.
                 this.tapClock.start();
-            } else {
-                if(this.tapClock.elapsedTime < doubleTapTime) {
-                    this.dispatchEvent("doubletap");
-                }
+            } else if(this.tapClock.getElapsedTime() > minDoubleTapTime) {
                 this.tapClock.stop();
+                this.dispatchEvent("doubletap");
             }
         } else {
-            if(this.tapClock.running && this.tapClock.elapsedTime > doubleTapTime) {
+            if(this.tapClock.running && this.tapClock.getElapsedTime() > doubleTapTime) {
                 this.tapClock.stop();
                 this.dispatchEvent("tap");
             }
