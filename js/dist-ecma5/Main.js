@@ -8,6 +8,7 @@ var loader = new THREE.TextureLoader();
 var clock = new THREE.Clock();
 var vrDisplay, vrElements, container, vrMode, leapController, scene, motionTracker;
 var interactionManager, fader, debugOverlay, skydomeMaterial, soundscape, airCanvas;
+var vrOnlyStylesheet;
 var mirrorRenderer;
 
 var mouseCursorData = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAWAgMAAAC52oSoAAAACVBMVEVwAIcAAAD///8+z9h7AAAAAXRSTlMAQObYZgAAAEdJREFUCNdjYGB0YAABtgl4qKkQalYIhMp0gFBAWVa3WZlLgJxpq1aCqGWrVgEpxlVgiiELhZKCUyBT2VAooA4HJCo01IEBAFzUIZQhQIXZAAAAAElFTkSuQmCC";
@@ -209,6 +210,21 @@ var HTML2VR = function () {
             vrElements.setStylesheet.apply(vrElements, args);
         }
     }, {
+        key: "setVrOnlyStylesheet",
+        value: function setVrOnlyStylesheet(sheet) {
+            vrOnlyStylesheet = sheet;
+            this.useVrOnlyrStylesheet(false);
+        }
+    }, {
+        key: "useVrOnlyrStylesheet",
+        value: function useVrOnlyrStylesheet(bool){
+                for( var i in document.styleSheets ){
+                    if( document.styleSheets[i].ownerNode && document.styleSheets[i].ownerNode.id === vrOnlyStylesheet) {
+                        void(document.styleSheets.item(i).disabled = !bool );
+                    }
+                }
+            }
+    }, {
         key: "setBackground",
         value: function setBackground(imageUrl, symmetric) {
             document.body.style.backgroundImage = 'url(' + imageUrl + ')';
@@ -232,6 +248,8 @@ var HTML2VR = function () {
                 if (vrDisplay) {
                     vrMode = true;
                     fader.showVR();
+                    if(vrOnlyStylesheet)
+                        this.useVrOnlyrStylesheet(true);
                     if (vrDisplay.capabilities.canPresent) {
                         if (!vrDisplay.isPresenting) {
                             effect.requestPresent();
@@ -270,6 +288,7 @@ var HTML2VR = function () {
                 debugOverlay.hideVirtualMouse();
                 exitPointerLock();
                 effect.exitPresent();
+                this.useVrOnlyrStylesheet(false);
             }
         }
     }, {
