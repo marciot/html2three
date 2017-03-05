@@ -7,6 +7,7 @@ var mirrorToScreen = false;
 var loader = new THREE.TextureLoader();
 var clock = new THREE.Clock();
 var vrDisplay, vrElements, container, vrMode, leapController, scene, motionTracker;
+var vrOnlyStylesheet;
 var interactionManager, fader, debugOverlay, skydomeMaterial, soundscape, airCanvas;
 var mirrorRenderer;
 
@@ -209,6 +210,21 @@ var HTML2VR = function () {
             vrElements.setStylesheet.apply(vrElements, args);
         }
     }, {
+        key: "setVrOnlyStylesheet",
+        value: function setVrOnlyStylesheet(sheet) {
+            vrOnlyStylesheet = sheet;
+            this.useVrOnlyStylesheet(false);
+        }
+    }, {
+        key: "useVrOnlyStylesheet",
+        value: function useVrOnlyStylesheet(bool) {
+            for (var i in document.styleSheets) {
+                if (document.styleSheets[i].ownerNode && document.styleSheets[i].ownerNode.id === vrOnlyStylesheet) {
+                    void (document.styleSheets.item(i).disabled = !bool);
+                }
+            }
+        }
+    }, {
         key: "setBackground",
         value: function setBackground(imageUrl, symmetric) {
             document.body.style.backgroundImage = 'url(' + imageUrl + ')';
@@ -232,6 +248,7 @@ var HTML2VR = function () {
                 if (vrDisplay) {
                     vrMode = true;
                     fader.showVR();
+                    if (vrOnlyStylesheet) this.useVrOnlyStylesheet(true);
                     if (vrDisplay.capabilities.canPresent) {
                         if (!vrDisplay.isPresenting) {
                             effect.requestPresent();
@@ -270,6 +287,7 @@ var HTML2VR = function () {
                 debugOverlay.hideVirtualMouse();
                 exitPointerLock();
                 effect.exitPresent();
+                this.useVrOnlyStylesheet(false);
             }
         }
     }, {

@@ -8,13 +8,21 @@
         <style>
             .vrPanel {
                 margin: 1em auto;
-            }
-            
+            }           
+
             /* Do not use "display: none", all objects must take up
                space on the page for them to be clickable in VR */
-
-            .vrOnly {
-                visibility: hidden; 
+            .vrOnly{
+                visibility: hidden;
+                position: absolute;
+                top:0;
+                z-index: -1;
+            } 
+        </style>
+        
+        <style id="inVR">
+            .vrOnly{
+                position: static;
             }
         </style>
         
@@ -311,6 +319,8 @@
             HTML2VR.init();
             HTML2VR.setBackground("textures/sky-day.jpg");
             HTML2VR.setStylesheet("#vrStyles");
+            HTML2VR.setVrOnlyStylesheet("inVR");
+            
             HTML2VR.add("#vrPanelFeatures", {azimuth: -120});
             HTML2VR.add("#vrPanelInteractive", {azimuth: -60});
             HTML2VR.add("#vrPanel1", {azimuth: 0});
