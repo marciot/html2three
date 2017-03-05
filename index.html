@@ -147,7 +147,12 @@
         <script src="https://js.leapmotion.com/leap-0.6.4.min.js"></script>
         <script src="https://js.leapmotion.com/leap-plugins-0.1.12.min.js"></script>
         
-        <!-- Required: All of the following html2three code is necessary -->
+        <!-- Required: Choose either the dist-ecma5 or src-ecma6 versions
+             of the html2three code. Use the files in "dist-ecma5" for best
+             compatibility. For rapid testing without recompilation, use a
+             modern browser and src-ecma6 files. Do not use both types at once.
+        -->
+        <!-- Compatibility (best compatibility): -->
         <script src="js/dist-ecma5/MotionTracker.js"></script>
         <script src="js/dist-ecma5/Skydome.js"></script>
         <script src="js/dist-ecma5/HTMLElements.js"></script>
@@ -156,6 +161,16 @@
         <script src="js/dist-ecma5/AirCanvas.js"></script>
         <script src="js/dist-ecma5/DebugOverlay.js"></script>
         <script src="js/dist-ecma5/Main.js"></script>
+        <!-- Alternative (good for rapid testing without compilation): -->
+        <!--<script src="js/src-ecma6/MotionTracker.js"></script>
+        <script src="js/src-ecma6/Skydome.js"></script>
+        <script src="js/src-ecma6/HTMLElements.js"></script>
+        <script src="js/src-ecma6/Controllers.js"></script>
+        <script src="js/src-ecma6/Soundscape.js"></script>
+        <script src="js/src-ecma6/AirCanvas.js"></script>
+        <script src="js/src-ecma6/DebugOverlay.js"></script>
+        <script src="js/src-ecma6/Main.js"></script>-->
+        <!-- end of alternative -->
         
     </head>
     <body>
