@@ -22,19 +22,27 @@ If you have an Oculus Rift or HTC Vive, you can try the [online demo](http://mar
 
 This library uses [WebGL], [WebVR], [WebAudio] and the [Gamepad API]. It uses a trick to [render HTML content to a Canvas], which is then made into a WebGL texture. When the user interacts with the object in VR, the touch coordinates are transformed back into document space and HTML2THREE library sends a synthetic click event to the corresponding element on the web page. The HTML2THREE library uses the [MutationObserver] web API to detect changes to DOM elements and updates the WebGL textures whenever a change is detected. This closed interaction loop allows the user to interact with the web page while in VR.
 
+## Limitations:
+
+The current version renders under the GearVR, but interaction is not working. Since I don't own a GearVR, correcting this
+problem is difficult.
+
 ## Licensing:
 
 I am a strong believer in open source. As such, this code has been released under the Affero GPL license.
 
 ## How can you help this project?
 
-Please visit my [Patreon page] to learn how you can support this open-source project!
+Please visit my [Patreon page] to learn how you can support this open-source project with a donation!
+
+Code contributions are welcome, especially if you are able to test and submit patches for hardware I don't
+have, such as the Google Daydream, GearVR or HTC Vive.
 
 ## Credits:
 
 This project makes use of [THREE.js], the [WebVR polyfill] and Leap Motion's [Orion Beta SDK]
 
-[logo]: https://github.com/marciot/html2three/raw/master/artwork/banner.png "A screenshot of the html2three demo using a Leap Motion controller"
+[logo]: https://github.com/marciot/html2three/raw/master/artwork/banner-animated.gif "A screenshot of the html2three demo using a Leap Motion controller"
 [Patreon page]: https://www.patreon.com/marciot
 [Chrome]: https://webvr.info/get-chrome/
 [Firefox]: https://mozvr.com/
