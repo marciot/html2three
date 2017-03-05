@@ -198,7 +198,7 @@ class MouseController {
         var useTouch = false;
         var me = this;
 
-        this.mousedownFunc  = function(e) {if(!useTouch)  triggerPressed(e);};
+        this.mousedownFunc  = function(e) {if(!useTouch){ triggerPressed(e); checkPointerLock(); }};
         this.mouseupFunc    = function(e) {if(!useTouch)  triggerReleased(e);};
         this.touchStartFunc = function(e) {useTouch=true; triggerPressed(e);};
         this.touchEndFunc   = function(e) {useTouch=true; triggerReleased(e);};
@@ -265,6 +265,7 @@ class InteractionManager {
 }
 
 /* Pointer Lock API Support */
+var last_pointer_lock_element;
 
 function requestPointerLock(element) {
     element.requestPointerLock = element.requestPointerLock ||
@@ -273,6 +274,7 @@ function requestPointerLock(element) {
     // Ask the browser to lock the pointer
     if(element.requestPointerLock) {
         element.requestPointerLock();
+        last_pointer_lock_element = element;
     }
 }
 
@@ -288,3 +290,7 @@ function isPointerLocked() {
            document.webkitPointerLockElement;
 }
 
+function checkPointerLock(){
+    if(HTML2VR.inVR && !isPointerLocked() && last_pointer_lock_element)
+        requestPointerLock(last_pointer_lock_element);
+}
