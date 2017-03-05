@@ -233,9 +233,8 @@ var MouseController = function MouseController(triggerPressed, triggerReleased) 
     var me = this;
 
     this.mousedownFunc = function (e) {
-        if (!useTouch){
-            triggerPressed(e);
-            checkPointerLock();
+        if (!useTouch) {
+            triggerPressed(e);checkPointerLock();
         }
     };
     this.mouseupFunc = function (e) {
@@ -319,14 +318,15 @@ var InteractionManager = function () {
 
 /* Pointer Lock API Support */
 
+
 var last_pointer_lock_element;
 
 function requestPointerLock(element) {
-    last_pointer_lock_element = element;
     element.requestPointerLock = element.requestPointerLock || element.mozRequestPointerLock || element.webkitRequestPointerLock;
     // Ask the browser to lock the pointer
     if (element.requestPointerLock) {
         element.requestPointerLock();
+        last_pointer_lock_element = element;
     }
 }
 
@@ -339,9 +339,6 @@ function isPointerLocked() {
     return document.pointerLockElement || document.mozPointerLockElement || document.webkitPointerLockElement;
 }
 
-function checkPointerLock(){
-    if(HTML2VR.inVR && !isPointerLocked() && last_pointer_lock_element)
-        requestPointerLock(last_pointer_lock_element);
-
-    console.log("checkt");
+function checkPointerLock() {
+    if (HTML2VR.inVR && !isPointerLocked() && last_pointer_lock_element) requestPointerLock(last_pointer_lock_element);
 }
