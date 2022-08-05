@@ -8,7 +8,7 @@ _html2three_ is an experimental library for creating VR content using HTML, CSS 
 * Float _div_ elements in VR space.
 * Embed images using _img_ tags.
 * Use stylesheets for sophisticated text formatting.
-* Design interactive elements using HTML, CSS and JavaScript.
+* Design interactive elements using HTML, [CSS](https://www.scaler.com/topics/css/) and JavaScript.
 * See your hands using a Leap Motion controller.
 * No WebGL or THREE.js knowledge required.
 
